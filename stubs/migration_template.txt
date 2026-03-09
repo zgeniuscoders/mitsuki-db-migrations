@@ -1,0 +1,20 @@
+<?php 
+
+use Mitsuki\Database\Schema\Schema;
+use Mitsuki\Database\Table;
+use Mitsuki\Database\Migrations\Migration;
+
+class $className extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('table_name', function (Table $table) {
+            $table->timestamps();
+        }, $this);
+    }
+
+    public function down(): void
+    {
+        $this->table('table_name')->drop()->save();
+    }
+}
