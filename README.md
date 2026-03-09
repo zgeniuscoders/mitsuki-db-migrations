@@ -17,7 +17,7 @@
 Install the package via Composer:
 
 ```bash
-composer require mitsuki/mitsuki-db-migrations
+composer require mitsuki/db-migrations
 
 ```
 
