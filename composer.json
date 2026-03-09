@@ -1,5 +1,5 @@
 {
-    "name": "mitsuki/mitsuki-db-migrations",
+    "name": "mitsuki/db-migrations",
     "description": "A lightweight, fluent database migration wrapper for the Mitsuki framework, built on top of Phinx.",
     "keywords": [
         "mitsuki",
