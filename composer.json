@@ -4,7 +4,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Mitsuki\\": "src/",
+            "Mitsuki\\Database\\": "src/",
             "Tests\\": "tests/"
         }
     },
@@ -16,11 +16,15 @@
     ],
     "minimum-stability": "stable",
     "require-dev": {
-        "pestphp/pest": "^4.4"
+        "pestphp/pest": "^4.4",
+        "mockery/mockery": "^1.6"
     },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "require": {
+        "robmorgan/phinx": "^0.16.10"
     }
 }
