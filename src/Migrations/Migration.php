@@ -1,6 +1,6 @@
 <?php
 
-namespace Mitsuki\Migrations;
+namespace Mitsuki\Database\Migrations;
 
 use Phinx\Migration\AbstractMigration;
 

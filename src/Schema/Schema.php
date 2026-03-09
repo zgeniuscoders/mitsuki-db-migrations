@@ -4,7 +4,7 @@ namespace Mitsuki\Database\Schema;
 
 use Closure;
 use Mitsuki\Database\Table;
-use Mitsuki\Migrations\Migration;
+use Mitsuki\Database\Migrations\Migration;
 
 /**
  * The Schema class provides a static interface for defining database tables.
