@@ -5,21 +5,26 @@
 ## ✨ Features
 
 * **Fluent API**: Define tables and columns using clean method chaining.
-* **Smart Migrations**: Automatically detects if a table exists to choose between `CREATE` or `ALTER` (Add column).
+* **Smart Migrations**: Automatically detects if a table exists to choose between `CREATE` or `ALTER`.
+* **Standardized Fields**: Quick helpers for primary keys (`id()`) and tracking (`timestamps()`).
 * **Relationship Helpers**: Intelligent foreign key resolution with `foreignIdFor()`.
 * **Phinx Powered**: Seamlessly integrates with your existing Phinx environments and commands.
 * **Fully Tested**: High-reliability codebase tested with Pest PHP and Mockery.
 
 ---
 
-## 🚀 Installation
+## 🚀 Installation & Setup
 
-Install the package via Composer:
+### 1. Install via Composer
 
 ```bash
 composer require mitsuki/db-migrations
 
 ```
+
+### 2. Initialize Phinx
+
+Ensure your `phinx.php` is configured to use the Mitsuki template and environment variables.
 
 ---
 
@@ -27,7 +32,7 @@ composer require mitsuki/db-migrations
 
 ### 1. Basic Table Creation
 
-In your Phinx migration file, use the `Schema` facade. It coordinates with the Phinx migration instance to execute your definitions.
+Use the `Schema` facade. It coordinates with the Phinx migration instance to execute your definitions.
 
 ```php
 use Mitsuki\Database\Schema\Schema;
@@ -41,8 +46,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Table $table) {
             $table->string('username', 100);
             $table->string('email')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->text('bio');
+            $table->timestamps(); // Adds 'created_at' and 'updated_at'
         }, $this);
     }
 
@@ -56,52 +60,72 @@ class CreateUsersTable extends Migration
 
 ### 2. 🔗 Foreign Keys & Relationships
 
-The `foreignIdFor()` method simplifies relationship management by automatically guessing column and table names based on your model classes.
-
-#### Automatic Resolution
-
-By default, it assumes a singular class name maps to a plural table (e.g., `User` -> `users`).
+The `foreignIdFor()` method simplifies relationship management by automatically guessing column and table names.
 
 ```php
-Schema::create('posts', function (Table $table) {
-    $table->string('title');
-    
-    // Creates an integer column 'user_id' and links it to 'users.id'
-    $table->foreignIdFor(\App\Models\User::class)
-          ->constrained()
-          ->onDelete('cascade')
-          ->onUpdate('restrict');
-}, $this);
+$table->foreignIdFor(\App\Models\User::class)
+      ->constrained()
+      ->onDelete('cascade');
 
 ```
 
-#### Manual Configuration
+---
 
-If you follow a different naming convention, you can specify everything manually:
+## 💻 Console Commands
 
-```php
-$table->foreignIdFor(\App\Models\User::class, 'author_id')
-      ->constrained('staff_members')
-      ->onDelete('set null');
+Mitsuki leverages the Phinx CLI. Here are the essential commands for your workflow:
+
+### Create a New Migration
+
+Generate a new migration file using the Mitsuki stub:
+
+```bash
+vendor/bin/phinx create MyNewMigration
+
+```
+
+### Run Migrations
+
+Execute all pending migrations:
+
+```bash
+# Running in default environment (Testing/SQLite)
+vendor/bin/phinx migrate
+
+# Force a specific environment (Development/MySQL)
+vendor/bin/phinx migrate -e development
 
 ```
 
-| Method | Description |
-| --- | --- |
-| `constrained(table)` | Defines the target table (optional if following conventions). |
-| `onDelete(action)` | Sets SQL action: `cascade`, `restrict`, `set null`, `no action`. |
-| `onUpdate(action)` | Sets the action when the parent primary key is updated. |
+### Rollback
 
-### 3. Column Options
+Undo the last migration:
 
-Every column type supports additional modifiers to refine your database schema:
-
-```php
-$table->string('code')->limit(10)->nullable();
-$table->decimal('price', 10, 2)->default(0.00);
-$table->text('content')->comment('The main body of the article');
+```bash
+vendor/bin/phinx rollback
 
 ```
+
+### Check Status
+
+See the list of migrated and pending files:
+
+```bash
+vendor/bin/phinx status
+
+```
+
+---
+
+## ⚙️ Configuration (`phinx.php`)
+
+Mitsuki handles environment switching automatically based on your `.env` file:
+
+| Env Var | Default | Description |
+| --- | --- | --- |
+| `ENVIRONEMENT` | `testing` | Switches between `testing` (SQLite) and `development` (MySQL). |
+| `DB_CONNECTION` | `mysql` | The database driver to use in development. |
+| `DB_DATABASE` | `mitsuki_db` | The name of your database or path to SQLite file. |
 
 ---
 
@@ -109,7 +133,7 @@ $table->text('content')->comment('The main body of the article');
 
 Mitsuki is designed to be safe. When you call `save()`, the library checks the database state:
 
-1. **If the table doesn't exist**: It executes a `CREATE TABLE` statement.
+1. **If the table doesn't exist**: It executes a `CREATE TABLE` statement (with `id => false` to let the Blueprint manage the primary key).
 2. **If the table exists**: It automatically switches to `ALTER TABLE` to add your new columns without destroying existing data.
 
 ---
@@ -127,7 +151,7 @@ composer test
 
 ## 📄 License
 
-The Mitsuki Database Migrations library is open-sourced software licensed under the [MIT license](https://www.google.com/search?q=LICENSE).
+The Mitsuki Database Migrations library is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 **Developed with ❤️ by [Zgeniuscoders**](mailto:zgeniuscoders@gmail.com)
 
