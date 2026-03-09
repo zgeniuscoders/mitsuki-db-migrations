@@ -1,5 +1,16 @@
 {
-    "name": "zgeniuscoders/mitsuki-db-migrations",
+    "name": "mitsuki/mitsuki-db-migrations",
+    "description": "A lightweight, fluent database migration wrapper for the Mitsuki framework, built on top of Phinx.",
+    "keywords": [
+        "mitsuki",
+        "php",
+        "framework",
+        "database",
+        "migrations",
+        "schema-builder",
+        "fluent-api",
+        "phinx-wrapper"
+    ],
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -15,6 +26,9 @@
         }
     ],
     "minimum-stability": "stable",
+    "require": {
+        "robmorgan/phinx": "^0.16.10"
+    },
     "require-dev": {
         "pestphp/pest": "^4.4",
         "mockery/mockery": "^1.6"
@@ -23,8 +37,5 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
-    },
-    "require": {
-        "robmorgan/phinx": "^0.16.10"
     }
 }
