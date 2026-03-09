@@ -132,4 +132,20 @@ class ColumnDefinition
     {
         return $this->options;
     }
+
+    /**
+     * Set a specific Phinx-compatible option for the column.
+     *
+     * This method allows setting any custom option that doesn't have 
+     * a dedicated helper method in this class.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function setOption(string $key, $value): self
+    {
+        $this->options[$key] = $value;
+        return $this;
+    }
 }
