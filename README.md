@@ -32,7 +32,7 @@ In your Phinx migration file, use the `Schema` facade. It coordinates with the P
 ```php
 use Mitsuki\Database\Schema\Schema;
 use Mitsuki\Database\Table;
-use Mitsuki\Migrations\Migration;
+use Mitsuki\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
