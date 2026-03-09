@@ -36,6 +36,24 @@ class Table
     }
 
     /**
+     * Add an auto-incrementing integer primary key column.
+     *
+     * In Mitsuki, this typically maps to an unsigned big integer 
+     * or a standard auto-incrementing integer.
+     *
+     * @return ColumnDefinition
+     */
+    public function id(): ColumnDefinition
+    {
+        $column = new ColumnDefinition('id', 'integer');
+        // On définit l'identité (auto-incrément) pour la clé primaire
+        $column->setOption('identity', true);
+
+        $this->columns[] = $column;
+        return $column;
+    }
+
+    /**
      * Add a string column to the table.
      *
      * @param string $name
@@ -114,6 +132,26 @@ class Table
         $this->foreignKeys[] = $definition;
 
         return $definition;
+    }
+
+    /**
+     * Add 'created_at' and 'updated_at' timestamp columns to the table.
+     *
+     * These columns are automatically managed by the database to track 
+     * record creation and last modification times using CURRENT_TIMESTAMP.
+     *
+     * @return void
+     */
+    public function timestamps(): void
+    {
+        // Colonne created_at
+        $this->columns[] = (new ColumnDefinition('created_at', 'timestamp'))
+            ->default('CURRENT_TIMESTAMP');
+
+        // Colonne updated_at avec mise à jour automatique
+        $this->columns[] = (new ColumnDefinition('updated_at', 'timestamp'))
+            ->default('CURRENT_TIMESTAMP')
+            ->setOption('update', 'CURRENT_TIMESTAMP');
     }
 
     /**
