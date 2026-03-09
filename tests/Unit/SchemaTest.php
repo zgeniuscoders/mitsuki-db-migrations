@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use Mitsuki\Database\Schema\Schema;
 use Mitsuki\Database\Table;
@@ -16,13 +16,15 @@ beforeEach(function () {
 });
 
 test('string method creates a column with correct options', function () {
-    // Assert that addColumn is called with proper type and constraints
+    // Assert table does not exist, so it should trigger create()
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
+
     $this->phinxTableMock->shouldReceive('addColumn')
         ->once()
         ->with('username', 'string', Mockery::on(function ($options) {
             return $options['limit'] === 100 && $options['null'] === true;
         }));
-    
+
     $this->phinxTableMock->shouldReceive('create')->once();
 
     $table = new Table($this->phinxTableMock);
@@ -31,13 +33,14 @@ test('string method creates a column with correct options', function () {
 });
 
 test('decimal method handles precision and scale', function () {
-    // Assert that numeric precision and scale are correctly passed to the options array
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
+
     $this->phinxTableMock->shouldReceive('addColumn')
         ->once()
         ->with('price', 'decimal', Mockery::on(function ($options) {
             return $options['precision'] === 10 && $options['scale'] === 2;
         }));
-    
+
     $this->phinxTableMock->shouldReceive('create')->once();
 
     $table = new Table($this->phinxTableMock);
@@ -46,12 +49,12 @@ test('decimal method handles precision and scale', function () {
 });
 
 test('foreignIdFor method generates correct column name and constraints', function () {
-    // 1. Verify the foreign key column is created as an integer
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
+
     $this->phinxTableMock->shouldReceive('addColumn')
         ->once()
         ->with('user_id', 'integer', Mockery::any());
 
-    // 2. Verify the foreign key constraint is attached with cascading rules
     $this->phinxTableMock->shouldReceive('addForeignKey')
         ->once()
         ->with('user_id', 'users', 'id', Mockery::on(function ($options) {
@@ -62,29 +65,77 @@ test('foreignIdFor method generates correct column name and constraints', functi
 
     $table = new Table($this->phinxTableMock);
 
-    // Act: define relationship based on a Model class string
     $table->foreignIdFor('App\Models\User')
-          ->constrained()
-          ->onDelete('cascade')
-          ->onUpdate('restrict');
-          
+        ->constrained()
+        ->onDelete('cascade')
+        ->onUpdate('restrict');
+
+    $table->save();
+});
+
+test('it updates the table if it already exists', function () {
+    // Simulate that the table already exists in the database
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(true);
+
+    $this->phinxTableMock->shouldReceive('addColumn')->once()->with('bio', 'text', Mockery::any());
+
+    // Should call update() instead of create()
+    $this->phinxTableMock->shouldReceive('update')->once();
+    $this->phinxTableMock->shouldNotReceive('create');
+
+    $table = new Table($this->phinxTableMock);
+    $table->text('bio');
     $table->save();
 });
 
 test('schema runner executes the callback correctly', function () {
     /** @var Migration|\Mockery\MockInterface */
     $migrationMock = Mockery::mock(Migration::class);
-    
-    // Ensure the migration provides the table instance to the schema builder
+
     $migrationMock->shouldReceive('table')
         ->with('posts')
         ->andReturn($this->phinxTableMock);
-    
+
+    // The internal save() will call exists()
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
     $this->phinxTableMock->shouldReceive('addColumn')->atLeast()->once();
     $this->phinxTableMock->shouldReceive('create')->once();
 
-    // Verify the static Schema::create interface works as expected
     Schema::create('posts', function (Table $table) {
         $table->string('title');
     }, $migrationMock);
+});
+
+test('it updates an existing table instead of creating a new one', function () {
+    // We expect the 'exists' check to return true
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(true);
+
+    // We expect addColumn to be called for the new column
+    $this->phinxTableMock->shouldReceive('addColumn')
+        ->once()
+        ->with('bio', 'text', Mockery::any());
+
+    // IMPORTANT: For an existing table, Phinx uses update() instead of create()
+    $this->phinxTableMock->shouldReceive('update')->once();
+    $this->phinxTableMock->shouldNotReceive('create');
+
+    $table = new Table($this->phinxTableMock);
+    $table->text('bio');
+
+    // We need to logic in our save() method to handle update vs create
+    $table->save();
+});
+
+test('it adds a new column to an existing table without duplication', function () {
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(true);
+
+    $this->phinxTableMock->shouldReceive('addColumn')
+        ->once()
+        ->with('new_feature_flag', 'boolean', Mockery::any());
+
+    $this->phinxTableMock->shouldReceive('update')->once();
+
+    $table = new Table($this->phinxTableMock);
+    $table->boolean('new_feature_flag');
+    $table->save();
 });

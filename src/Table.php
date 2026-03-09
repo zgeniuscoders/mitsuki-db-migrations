@@ -143,6 +143,10 @@ class Table
             );
         }
 
-        $this->phinxTable->create();
+        if ($this->phinxTable->exists()) {
+            $this->phinxTable->update();
+        } else {
+            $this->phinxTable->create();
+        }
     }
 }
