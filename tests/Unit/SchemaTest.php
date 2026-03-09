@@ -2,7 +2,7 @@
 
 use Mitsuki\Database\Schema\Schema;
 use Mitsuki\Database\Table;
-use Mitsuki\Migrations\Migration;
+use Mitsuki\Database\Migrations\Migration;
 use Phinx\Db\Table as PhinxTable;
 
 /**
@@ -137,5 +137,46 @@ test('it adds a new column to an existing table without duplication', function (
 
     $table = new Table($this->phinxTableMock);
     $table->boolean('new_feature_flag');
+    $table->save();
+});
+
+test('id method creates an auto-incrementing primary key', function () {
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
+
+    $this->phinxTableMock->shouldReceive('addColumn')
+        ->once()
+        ->with('id', 'integer', Mockery::on(function ($options) {
+            // On vérifie que l'option identity est bien présente pour l'auto-incrément
+            return $options['identity'] === true;
+        }));
+
+    $this->phinxTableMock->shouldReceive('create')->once();
+
+    $table = new Table($this->phinxTableMock);
+    $table->id();
+    $table->save();
+});
+
+test('timestamps method creates created_at and updated_at columns', function () {
+    $this->phinxTableMock->shouldReceive('exists')->once()->andReturn(false);
+
+    // On s'attend à deux appels à addColumn
+    $this->phinxTableMock->shouldReceive('addColumn')
+        ->once()
+        ->with('created_at', 'timestamp', Mockery::on(function ($options) {
+            return $options['default'] === 'CURRENT_TIMESTAMP';
+        }));
+
+    $this->phinxTableMock->shouldReceive('addColumn')
+        ->once()
+        ->with('updated_at', 'timestamp', Mockery::on(function ($options) {
+            return $options['default'] === 'CURRENT_TIMESTAMP' 
+                && $options['update'] === 'CURRENT_TIMESTAMP';
+        }));
+
+    $this->phinxTableMock->shouldReceive('create')->once();
+
+    $table = new Table($this->phinxTableMock);
+    $table->timestamps();
     $table->save();
 });
