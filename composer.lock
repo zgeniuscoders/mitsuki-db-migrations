@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba600245f667b10d50d6810e01786228",
+    "content-hash": "29b3f97724f8d747fc88fa67c8059fce",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -2218,6 +2218,103 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.1"
             },
             "time": "2025-03-19T14:43:43+00:00"
+        },
+        {
+            "name": "mitsuki/commands",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zgeniuscoders/mitsuki-commands.git",
+                "reference": "152e7c83db915af9ec6e92fc9b9548bf071f18a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zgeniuscoders/mitsuki-commands/zipball/152e7c83db915af9ec6e92fc9b9548bf071f18a1",
+                "reference": "152e7c83db915af9ec6e92fc9b9548bf071f18a1",
+                "shasum": ""
+            },
+            "require": {
+                "mitsuki/contracts": "^1.0",
+                "php": ">=8.2",
+                "symfony/console": "^7.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tests\\": "tests/",
+                    "Mitsuki\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zgeniuscoders",
+                    "email": "zgeniuscoders@gmail.com"
+                }
+            ],
+            "description": "A powerful command-line interface library for the Mitsuki framework.",
+            "keywords": [
+                "cli",
+                "commands",
+                "console",
+                "mitsuki",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/zgeniuscoders/mitsuki-commands/issues",
+                "source": "https://github.com/zgeniuscoders/mitsuki-commands/tree/v1.0.0"
+            },
+            "time": "2026-03-09T15:57:55+00:00"
+        },
+        {
+            "name": "mitsuki/contracts",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zgeniuscoders/mitsuki-contracts.git",
+                "reference": "4fdbf9d8eea64e48a117e56f09f45e46970bb755"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zgeniuscoders/mitsuki-contracts/zipball/4fdbf9d8eea64e48a117e56f09f45e46970bb755",
+                "reference": "4fdbf9d8eea64e48a117e56f09f45e46970bb755",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mitsuki\\Contracts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "zgeniusecoders",
+                    "email": "zgeniusecoders@gmail.com"
+                }
+            ],
+            "description": "Core interfaces and abstractions for the Mitsuki framework.",
+            "keywords": [
+                "contracts",
+                "framework",
+                "interfaces",
+                "mitsuki",
+                "psr"
+            ],
+            "support": {
+                "issues": "https://github.com/zgeniuscoders/mitsuki-contracts/issues",
+                "source": "https://github.com/zgeniuscoders/mitsuki-contracts/tree/v1.0.2"
+            },
+            "time": "2026-02-20T15:43:34+00:00"
         },
         {
             "name": "mockery/mockery",
